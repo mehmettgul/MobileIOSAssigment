@@ -35,7 +35,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // her bir item'ın boyutunu belirlediğimiz fonksiyon.
         let gridLayout = collectionViewLayout as! UICollectionViewFlowLayout
-        let widthPerItem = collectionView.frame.width / 2 - gridLayout.minimumInteritemSpacing
+        let widthPerItem = collectionView.frame.width / 2 - gridLayout.minimumInteritemSpacing // her bir öğenin genişliğini belirlemek için kullanılır.
         return CGSize(width:widthPerItem, height:300)
     }
     
@@ -51,7 +51,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             // guard ve if aynı guard hatayı başta yakalar.
             // dequeueReusableCell bunun amacı hücre yeniden kullanılabilir. hücre içindeki veriler silinse de değişse de yeniden aynı hücre kullanılabilir.
         
-        let item = data[indexPath.row]
+        let item = data[indexPath.row] // diziden elemanları çekiyorum.
         
         cell.getWidthHeightListItem(width: item.previewWidth, height: item.previewHeight) // resimlerin boyutlarını cell dosyasına yolluyoruz
         if let imageURL = URL(string: item.previewURL) { // cell'lerdeki image'ların çekilmesi.
@@ -101,7 +101,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "homeToDetail" {
             let destinationVC = segue.destination as! DetailViewController // destination değerinden bir viewController gelir ama hangisinin geldiğini bilemez o yüzden vc ise ona göre cast edilir.
-            destinationVC.userName = userName
+            destinationVC.userName = userName // Burda verileri detailViewController dan çekiyoruz.
             destinationVC.comment = comment
             destinationVC.like = like
             destinationVC.userImage = userImage
@@ -114,8 +114,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        collectionView.delegate = self // Öğren
-        collectionView.dataSource = self // Öğren
+        collectionView.delegate = self
+        collectionView.dataSource = self
         
         // Veri çekme isteği atılıyor.
         fetchData()
@@ -124,8 +124,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         
         let layout = UICollectionViewFlowLayout() // grid düzen oluşturmak için kullandığımız blok
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 5
-        layout.minimumInteritemSpacing = 5
+        layout.minimumLineSpacing = 5 // öğeler arası dikey boşluk
+        layout.minimumInteritemSpacing = 5 // öğeler arası min yatay boşluk
         collectionView.setCollectionViewLayout(layout, animated: true)
         
     }
@@ -140,7 +140,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
                             if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
                                 // JSON verisi başarıyla parse edildi, verilere eriş
                                 if let fetchData = json["hits"] as? [[String: Any]] {
-                                    for data in fetchData {
+                                    for data in fetchData { // her bir nesnenin doğru türden olup olmadığını kontrol ediyor.
                                         if  let id = data["id"] as? Int,
                                             let previewURL = data["previewURL"] as? String,
                                             let previewWidth = data["previewWidth"] as? Int,
@@ -156,6 +156,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
                                             print("previewURL: \(previewURL), previewWidth: \(previewWidth), previewHeight: \(previewHeight), Likes: \(likes), Comments: \(comments), Views: \(views), User: \(user), UserImageURL: \(userImageURL), webformatURL: \(webformatURL), webformatWidth: \(webformatWidth), webformatHeight: \(webformatHeight), id: \(id)")
                                             let responseData = dataResponse(id: id, previewURL: previewURL, previewWidth: previewWidth, previewHeight: previewHeight, likes: likes, comments: comments, views: views, user: user, userImageURL: userImageURL, webformatURL: webformatURL, webformatWidth: webformatWidth, webformatHeight: webformatHeight)
                                             self.data.append(responseData)
+                                            // daha sonra da bir dataResponse nesnesi oluşturup bunu data dizisine ekliyo.
                                         }
                                     }
                                 }
@@ -174,7 +175,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     }
     
 }
-
+// ESKİ DENEMELER : 
 /*
  // Veri çekme isteği atılıyor.
  AF.request("\(baseUrl)?key=37427312-d8d1e5548011abcd225706ea7", method: .get).responseJSON { response in

@@ -46,8 +46,8 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        listCollectionView.delegate = self // Öğren
-        listCollectionView.dataSource = self // Öğren
+        listCollectionView.delegate = self 
+        listCollectionView.dataSource = self
         
         listCollectionView.register(UINib(nibName: "ListItemCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "listItem") // Burası hazırladığımız cell tasarımını collectiona tanıtır.
         

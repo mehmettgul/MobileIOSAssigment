@@ -28,11 +28,6 @@ class ListItemCollectionViewCell: UICollectionViewCell {
 //        imageView.addGestureRecognizer(gestureRecognizer) // view ' a GR eklendi
         
     }
-    
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        imageView.frame.size = CGSize(width: self.width, height: self.height)
-    }
 
     @IBAction func likeClicked(_ sender: Any) {
         print("tapped")
@@ -40,9 +35,9 @@ class ListItemCollectionViewCell: UICollectionViewCell {
     
     @objc func tapToDetail() { // Detay sayfasına gideceğimiz fonksiyon.
         print("tapToDetail")
-        topToDetailButtonClicked?() // Öğren
+        topToDetailButtonClicked?() // topToDetailButtonClicked bu fonksiyonu çağırır eğer fonk yoksa hata vermez.
     }
-    var topToDetailButtonClicked : (()->())? // Öğren
+    var topToDetailButtonClicked : (()->())? // parametre de yok geri dönüş de yok. bu fonk çağrıldığında closure çağrılır.  Closure ise belli bir eylem için vs kullanılabilir. topToDetailButtonClicked değişkenine bir closure atadık, bu buton tıklandığında detay sayfasına gidilir. Closure'ı atadıktan sonra topToDetailButtonClicked?() ifadesiyle bu closure çağırılır.
     
     func getWidthHeightListItem(width: Int, height: Int) { // resimlerin boyutlarını alıp bu boyutlara göre gösterme işlemi yapıyoruz. 
         self.width = width
