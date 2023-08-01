@@ -12,16 +12,13 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var listCollectionView: UICollectionView!
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        // her bir item'ın sağdan soldan yukardan ve aşağıdan boşluklarını belirtir.
-        return UIEdgeInsets(top: 1.0, left: 1.0, bottom: 1.0, right: 1.0)
-    }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // her bir item'ın boyutunu belirlediğimiz fonksiyon.
-        let gridLayout = collectionViewLayout as! UICollectionViewFlowLayout
-        let widthPerItem = collectionView.frame.width / 2 - gridLayout.minimumInteritemSpacing
-        return CGSize(width:widthPerItem, height:300)
+        let screenWidth = UIScreen.main.bounds.width
+        let cellWidth = (screenWidth - 3 * 20) / 2 // Hücreler arasındaki boşluğu da hesaba katarak genişlik hesabı
+        let cellHeight: CGFloat = 200
+                
+        return CGSize(width: cellWidth, height: cellHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -53,10 +50,16 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
         
         let layout = UICollectionViewFlowLayout() // grid düzen oluşturmak için kullandığımız blok
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 5
-        layout.minimumInteritemSpacing = 5
+        layout.minimumInteritemSpacing = 20
+        layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
         listCollectionView.setCollectionViewLayout(layout, animated: true)
         
     }
 
 }
+/*
+ func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+     // her bir item'ın sağdan soldan yukardan ve aşağıdan boşluklarını belirtir.
+     return UIEdgeInsets(top: 1.0, left: 1.0, bottom: 1.0, right: 0.0)
+ }
+*/

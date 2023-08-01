@@ -42,17 +42,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar contentMode="redraw" placeholder="Ara" translatesAutoresizingMaskIntoConstraints="NO" id="qUv-YU-L8S">
-                                <rect key="frame" x="1" y="100" width="393" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="Auh-SD-GhW"/>
-                                </constraints>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <outlet property="delegate" destination="mkL-iL-1Zi" id="Mxl-LV-Fer"/>
-                                </connections>
-                            </searchBar>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="5lA-mF-8Rx">
                                 <rect key="frame" x="1" y="144" width="392" height="625"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -76,17 +65,28 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <searchBar contentMode="redraw" placeholder="Ara" translatesAutoresizingMaskIntoConstraints="NO" id="qUv-YU-L8S">
+                                <rect key="frame" x="37" y="100" width="319" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="qrc-lP-9re"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="mkL-iL-1Zi" id="Mxl-LV-Fer"/>
+                                </connections>
+                            </searchBar>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="hza-z3-ORv"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="qUv-YU-L8S" firstAttribute="centerX" secondItem="5lA-mF-8Rx" secondAttribute="centerX" id="900-4b-Egf"/>
-                            <constraint firstItem="5lA-mF-8Rx" firstAttribute="top" secondItem="qUv-YU-L8S" secondAttribute="bottom" id="GNs-GE-dJB"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="qUv-YU-L8S" secondAttribute="trailing" constant="-17" id="Vdm-Ig-cb0"/>
-                            <constraint firstItem="5lA-mF-8Rx" firstAttribute="bottom" secondItem="hza-z3-ORv" secondAttribute="bottom" id="ZTV-1e-fvD"/>
-                            <constraint firstItem="qUv-YU-L8S" firstAttribute="leading" secondItem="5lA-mF-8Rx" secondAttribute="leading" id="aO2-Vu-jCm"/>
-                            <constraint firstItem="qUv-YU-L8S" firstAttribute="leading" secondItem="hza-z3-ORv" secondAttribute="leading" constant="1" id="j3D-h2-BFr"/>
-                            <constraint firstItem="qUv-YU-L8S" firstAttribute="top" secondItem="hza-z3-ORv" secondAttribute="top" constant="41" id="sbp-fa-UdH"/>
+                            <constraint firstItem="5lA-mF-8Rx" firstAttribute="top" secondItem="qUv-YU-L8S" secondAttribute="bottom" id="42E-JY-PNw"/>
+                            <constraint firstItem="qUv-YU-L8S" firstAttribute="centerX" secondItem="7VW-6I-wKB" secondAttribute="centerX" id="ArD-3c-624"/>
+                            <constraint firstItem="qUv-YU-L8S" firstAttribute="centerX" secondItem="5lA-mF-8Rx" secondAttribute="centerX" id="O3O-Ac-wQz"/>
+                            <constraint firstItem="5lA-mF-8Rx" firstAttribute="bottom" secondItem="hza-z3-ORv" secondAttribute="bottom" id="XLz-Zc-UA1"/>
+                            <constraint firstItem="qUv-YU-L8S" firstAttribute="leading" secondItem="hza-z3-ORv" secondAttribute="leading" constant="37" id="ZJe-DL-CLB"/>
+                            <constraint firstItem="5lA-mF-8Rx" firstAttribute="leading" secondItem="hza-z3-ORv" secondAttribute="leading" constant="1" id="wvp-qN-GL3"/>
+                            <constraint firstItem="qUv-YU-L8S" firstAttribute="top" secondItem="hza-z3-ORv" secondAttribute="top" constant="41" id="xek-Gk-AwF"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="" image="Search" id="rko-a3-goF"/>
@@ -203,21 +203,20 @@
                                 <rect key="frame" x="0.0" y="59" width="393" height="710"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="u1O-ew-02n">
-                                    <size key="itemSize" width="176" height="209"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" sectionInsetReference="safeArea" id="u1O-ew-02n">
+                                    <size key="itemSize" width="150" height="220"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="" id="Xo2-eC-K4C">
-                                        <rect key="frame" x="0.0" y="0.0" width="176" height="209"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="150" height="220"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="hYk-iW-SB5">
-                                            <rect key="frame" x="0.0" y="0.0" width="176" height="209"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="BtX-Rx-WKO">
+                                            <rect key="frame" x="0.0" y="0.0" width="150" height="220"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </collectionViewCellContentView>
-                                        <size key="customSize" width="176" height="209"/>
                                         <connections>
                                             <segue destination="9GG-2V-WER" kind="show" identifier="homeToDetail" id="KaQ-7W-uJy"/>
                                         </connections>

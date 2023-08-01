@@ -17,7 +17,6 @@ class ListItemCollectionViewCell: UICollectionViewCell {
     
     var width: Int = 0
     var height: Int = 0
-    var id = 0 
     
     override func awakeFromNib() {
         super.awakeFromNib()

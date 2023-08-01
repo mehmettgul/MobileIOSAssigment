@@ -26,7 +26,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         // her bir item'ın sağdan soldan yukardan ve aşağıdan boşluklarını belirtir.
-        return UIEdgeInsets(top: 1.0, left: 4.0, bottom: 1.0, right: 4.0)
+        return UIEdgeInsets(top: 1.0, left: 20.0, bottom: 1.0, right: 5.0)
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 2.0 // hücreler arasında 10 birim yatay boşluk
@@ -34,9 +34,14 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // her bir item'ın boyutunu belirlediğimiz fonksiyon.
-        let gridLayout = collectionViewLayout as! UICollectionViewFlowLayout
+        /*let gridLayout = collectionViewLayout as! UICollectionViewFlowLayout
         let widthPerItem = collectionView.frame.width / 2 - gridLayout.minimumInteritemSpacing // her bir öğenin genişliğini belirlemek için kullanılır.
-        return CGSize(width:widthPerItem, height:300)
+        return CGSize(width:widthPerItem, height:300)*/
+        let screenWidth = UIScreen.main.bounds.width
+        let cellWidth = (screenWidth - 60) / 2 // Hücreler arasındaki boşluğu da hesaba katarak genişlik hesabı
+        let cellHeight: CGFloat = 210
+            
+        return CGSize(width: cellWidth, height: cellHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -124,8 +129,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         
         let layout = UICollectionViewFlowLayout() // grid düzen oluşturmak için kullandığımız blok
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 5 // öğeler arası dikey boşluk
-        layout.minimumInteritemSpacing = 5 // öğeler arası min yatay boşluk
+        layout.minimumInteritemSpacing = 20 // Hücreler arasındaki boşluk
+        layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20) // Hücreler ile ekran arasındaki boşluk
         collectionView.setCollectionViewLayout(layout, animated: true)
         
     }
