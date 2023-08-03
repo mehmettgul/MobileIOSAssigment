@@ -19,4 +19,19 @@ struct dataResponse : Codable { // Codable bir protokold√ºr. decode ve encode i≈
     var webformatURL: String
     var webformatWidth: Int
     var webformatHeight: Int
+    
+    init(id: Int, previewURL: String, previewWidth: Int, previewHeight: Int, likes: Int, comments: Int, views: Int, user: String, userImageURL: String, webformatURL: String, webformatWidth: Int, webformatHeight: Int) {
+        self.id = id
+        self.previewURL = previewURL
+        self.previewWidth = previewWidth
+        self.previewHeight = previewHeight
+        self.likes = likes
+        self.comments = comments
+        self.views = views
+        self.user = user
+        self.userImageURL = userImageURL
+        self.webformatURL = webformatURL
+        self.webformatWidth = webformatWidth
+        self.webformatHeight = webformatHeight
+    }
 }

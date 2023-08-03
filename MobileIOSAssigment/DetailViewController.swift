@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 class DetailViewController: UIViewController {
 
@@ -15,13 +16,16 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var detailUserImage: UIImageView!
     @IBOutlet weak var detailUserName: UILabel!
     
-    var userName = ""
-    var like = ""
-    var comment = ""
-    var userImage = UIImage()
-    var webformatImage = UIImage()
-    var webformatWidth: Int = 0
-    var webformatHeight: Int = 0
+    var dataResponse: dataResponse?
+    
+    init(dataResponse: dataResponse?) {
+            self.dataResponse = dataResponse
+            super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+            super.init(coder: aDecoder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,13 +34,14 @@ class DetailViewController: UIViewController {
         detailUserImage.clipsToBounds = true
         detailUserImage.contentMode = .scaleAspectFill
         // Bilgilerimizi aldık.
-        detailUserName.text = userName
-        detailLike.text = like
-        detailComments.text = comment
-        detailUserImage.image = userImage
-        detailImage?.image = webformatImage
-        detailImage?.frame.size = CGSize(width: webformatWidth, height: webformatHeight)
-        
+        if let dataResponse = dataResponse {
+            detailUserName.text = dataResponse.user
+            detailLike.text = String(dataResponse.likes)
+            detailComments.text = "(\(dataResponse.comments) Yorum)"//String(dataResponse.comments)
+            detailUserImage?.kf.setImage(with: URL(string: dataResponse.userImageURL))
+            detailImage?.kf.setImage(with: URL(string: dataResponse.previewURL))
+            detailImage?.frame.size = CGSize(width: dataResponse.webformatWidth, height: dataResponse.webformatHeight)
+        }
     }
         
 }

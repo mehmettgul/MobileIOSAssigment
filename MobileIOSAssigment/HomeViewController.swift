@@ -23,6 +23,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     var webformatImage = UIImage()
     var webformatWidth = 0
     var webformatHeight = 0
+    var id = 0
+    var index = -1
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         // her bir item'ın sağdan soldan yukardan ve aşağıdan boşluklarını belirtir.
@@ -33,10 +35,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // her bir item'ın boyutunu belirlediğimiz fonksiyon.
-        /*let gridLayout = collectionViewLayout as! UICollectionViewFlowLayout
-        let widthPerItem = collectionView.frame.width / 2 - gridLayout.minimumInteritemSpacing // her bir öğenin genişliğini belirlemek için kullanılır.
-        return CGSize(width:widthPerItem, height:300)*/
+        // İtemlerın boyutlarının belirlendiği kısım. 
         let screenWidth = UIScreen.main.bounds.width
         let cellWidth = (screenWidth - 60) / 2 // Hücreler arasındaki boşluğu da hesaba katarak genişlik hesabı
         let cellHeight: CGFloat = 210
@@ -51,26 +50,25 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         // Cell'lerin içerisindeki verileri göstermeye yarayan method
-        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "listItem", for: indexPath) as? ListItemCollectionViewCell else { return UICollectionViewCell() }
             // guard ve if aynı guard hatayı başta yakalar.
             // dequeueReusableCell bunun amacı hücre yeniden kullanılabilir. hücre içindeki veriler silinse de değişse de yeniden aynı hücre kullanılabilir.
-        
         let item = data[indexPath.row] // diziden elemanları çekiyorum.
-        
         cell.getWidthHeightListItem(width: item.previewWidth, height: item.previewHeight) // resimlerin boyutlarını cell dosyasına yolluyoruz
         if let imageURL = URL(string: item.previewURL) { // cell'lerdeki image'ların çekilmesi.
             cell.imageView.kf.setImage(with: imageURL)
             
         }
-        cell.comments.text = "(\(item.comments) Yorum)" // comments, like, görüntülenme bilgisi çekiliyor.
+        cell.comments.text = " (\(item.comments) Yorum)" // comments, like, görüntülenme bilgisi çekiliyor.
         cell.likes.text = String(item.likes)
         cell.views.text = "\(item.views) (görüntülenme)"
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        index = indexPath.row
         let item = data[indexPath.row]
+        self.id = item.id
         self.userName = item.user // segue öncesi bu sayfada çektiğimiz verileri bu sayfadaki değişkenlerde tutuyoruz.
         self.like = String(item.likes)
         self.comment = "(\(item.comments) Yorum)"
@@ -105,14 +103,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "homeToDetail" {
-            let destinationVC = segue.destination as! DetailViewController // destination değerinden bir viewController gelir ama hangisinin geldiğini bilemez o yüzden vc ise ona göre cast edilir.
-            destinationVC.userName = userName // Burda verileri detailViewController dan çekiyoruz.
-            destinationVC.comment = comment
-            destinationVC.like = like
-            destinationVC.userImage = userImage
-            destinationVC.webformatWidth = webformatWidth
-            destinationVC.webformatHeight = webformatHeight
-            destinationVC.webformatImage = webformatImage
+                let destinationVC = segue.destination as! DetailViewController // destination değerinden bir viewController gelir ama hangisinin geldiğini bilemez o yüzden vc ise ona göre cast edilir.
+            destinationVC.dataResponse = data[index]
         }
     }
     
@@ -158,9 +150,11 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
                                             let webformatURL = data["webformatURL"] as? String,
                                             let webformatWidth = data["webformatWidth"] as? Int,
                                             let webformatHeight = data["webformatHeight"] as? Int {
-                                            print("previewURL: \(previewURL), previewWidth: \(previewWidth), previewHeight: \(previewHeight), Likes: \(likes), Comments: \(comments), Views: \(views), User: \(user), UserImageURL: \(userImageURL), webformatURL: \(webformatURL), webformatWidth: \(webformatWidth), webformatHeight: \(webformatHeight), id: \(id)")
+                                            /*print("previewURL: \(previewURL), previewWidth: \(previewWidth), previewHeight: \(previewHeight), Likes: \(likes), Comments: \(comments), Views: \(views), User: \(user), UserImageURL: \(userImageURL), webformatURL: \(webformatURL), webformatWidth: \(webformatWidth), webformatHeight: \(webformatHeight), id: \(id)")*/
                                             let responseData = dataResponse(id: id, previewURL: previewURL, previewWidth: previewWidth, previewHeight: previewHeight, likes: likes, comments: comments, views: views, user: user, userImageURL: userImageURL, webformatURL: webformatURL, webformatWidth: webformatWidth, webformatHeight: webformatHeight)
-                                            self.data.append(responseData)
+                                            //self.data.append(responseData)
+                                            DataManager.shared.dataArray.append(responseData)
+                                            self.data = DataManager.shared.dataArray
                                             // daha sonra da bir dataResponse nesnesi oluşturup bunu data dizisine ekliyo.
                                         }
                                     }
@@ -180,74 +174,3 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     }
     
 }
-// ESKİ DENEMELER : 
-/*
- // Veri çekme isteği atılıyor.
- AF.request("\(baseUrl)?key=37427312-d8d1e5548011abcd225706ea7", method: .get).responseJSON { response in
-         if let error = response.error { // hata alıp almadığımızı kontrol ediyoruz.
-             print(error)
-         } else { // hata yoksa çektiğimiz verileri konsoldan görebiliyoruz.
-             print(response)
-         }
-     }
-*/
-/*
- // Veri çekme isteği atılıyor.
- AF.request("\(baseUrl)?key=37427312-d8d1e5548011abcd225706ea7", method: .get).responseJSON { response in
-         if let error = response.error { // hata alıp almadığımızı kontrol ediyoruz.
-             print(error)
-         } else { // hata yoksa çektiğimiz verileri konsoldan görebiliyoruz.
-             if let url = URL(string: "https://pixabay.com/api/?key=37427312-d8d1e5548011abcd225706ea7") {
-                 URLSession.shared.dataTask(with: url) { (data, response, error) in
-                     if error == nil {
-                         do {
-                             self.response = try self.jsonDecoder.decode([dataResponse].self, from: data!)
-                         }catch {
-                             print("parse error")
-                         }
-                         DispatchQueue.main.async {
-                             self.collectionView.reloadData()
-                         }
-                     }
-                 }.resume()
-               }
-             //print(response)
-         }
- }
-*/
-/* ÇALIŞAN GÜNCEL
- func fetchData() {
-     AF.request("\(baseUrl)?key=37427312-d8d1e5548011abcd225706ea7", method: .get).responseJSON { response in
-             if let error = response.error { // hata alıp almadığımızı kontrol ediyoruz.
-                 print(error)
-             } else { // hata yoksa çektiğimiz verileri konsoldan görebiliyoruz.
-                 do {
-                     if let data = response.data {
-                         if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                             // JSON verisi başarıyla parse edildi, verilere erişmeye hazırsınız
-                             
-                             if let fetchData = json["hits"] as? [[String: Any]] {
-                                 for data in fetchData {
-                                     if let previewURL = data["previewURL"] as? String,
-                                         let previewWidth = data["previewWidth"] as? Int,
-                                         let previewHeight = data["previewHeight"] as? Int,
-                                         let likes = data["likes"] as? Int,
-                                         let comments = data["comments"] as? Int,
-                                         let views = data["views"] as? Int {
-                                         print("previewURL: \(previewURL), previewWidth: \(previewWidth), previewHeight: \(previewHeight), Likes: \(likes), Comments: \(comments), Views: \(views)")
-                                     }
-                                 }
-                                 //self.data = fetchData
-                             }
-                         } else {
-                             print("else'deki error")
-                         }
-                     }
-                 } catch {
-                     print("catch'deki error")
-                 }
-                 //print(response)
-             }
-         }
- }
-*/

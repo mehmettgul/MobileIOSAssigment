@@ -7,37 +7,56 @@
 
 import UIKit
 
-class ListViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+class ListViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UISearchBarDelegate{
+    
     
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var listCollectionView: UICollectionView!
     
+    var listData: [dataResponse] = DataManager.shared.dataArray
+    var searchData: [dataResponse] = []
+    var isSearching: Bool = false
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // her bir item'ın boyutunu belirlediğimiz fonksiyon.
         let screenWidth = UIScreen.main.bounds.width
-        let cellWidth = (screenWidth - 3 * 20) / 2 // Hücreler arasındaki boşluğu da hesaba katarak genişlik hesabı
-        let cellHeight: CGFloat = 200
-                
+        let cellWidth = (screenWidth - 60) / 2 // Hücreler arasındaki boşluğu da hesaba katarak genişlik hesabı
+        let cellHeight: CGFloat = 210
+            
         return CGSize(width: cellWidth, height: cellHeight)
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // kaç section olacağıyla alakalı method
-        return 50 // kaç eleman olacağını döndürür.
+        return isSearching ? searchData.count : listData.count // kaç eleman olacağını döndürür.
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         // Cell'lerin içerisindeki verileri göstermeye yarayan method
         
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "listItem", for: indexPath) as? ListItemCollectionViewCell else { return UICollectionViewCell() } // guard ve if aynı guard hatayı başta yakalar.
-            // dequeueReusableCell bunun amacı hücre yeniden kullanılabilir. hücre içindeki veriler silinse de değişse de yeniden aynı hücre kullanılabilir.
-        cell.comments.text = "Bu bir yorumdur" // comments, like, görüntülenme bilgisi çekiliyor.
-        cell.likes.text = "123"
-        cell.views.text = "1231k (görüntülenme)"
-        cell.topToDetailButtonClicked = { // segue yaptığımız bölüm
-            self.performSegue(withIdentifier: "ListToDetail", sender: self)
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "listItem", for: indexPath) as? ListItemCollectionViewCell else { return UICollectionViewCell() }
+        
+        let item = searchData[indexPath.row]
+        
+        cell.getWidthHeightListItem(width: item.previewWidth, height: item.previewHeight)
+        if let imageURL = URL(string: item.previewURL) {
+            cell.imageView.kf.setImage(with: imageURL)
         }
+        cell.comments.text = "(\(item.comments) Yorum)"
+        cell.likes.text = String(item.likes)
+        cell.views.text = "\(item.views) (görüntülenme)"
         return cell
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            isSearching = false
+            searchData = []
+        } else {
+            isSearching = true
+            searchData = listData.filter{$0.user.lowercased().contains(searchText.lowercased())}
+        }
+        listCollectionView.reloadData()
     }
     
     override func viewDidLoad() {
@@ -45,6 +64,7 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
 
         listCollectionView.delegate = self 
         listCollectionView.dataSource = self
+        searchBar.delegate = self
         
         listCollectionView.register(UINib(nibName: "ListItemCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "listItem") // Burası hazırladığımız cell tasarımını collectiona tanıtır.
         
@@ -53,13 +73,6 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
         layout.minimumInteritemSpacing = 20
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
         listCollectionView.setCollectionViewLayout(layout, animated: true)
-        
+        print(listData)
     }
-
 }
-/*
- func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-     // her bir item'ın sağdan soldan yukardan ve aşağıdan boşluklarını belirtir.
-     return UIEdgeInsets(top: 1.0, left: 1.0, bottom: 1.0, right: 0.0)
- }
-*/
