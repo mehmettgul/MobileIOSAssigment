@@ -103,7 +103,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="selectImage.png" translatesAutoresizingMaskIntoConstraints="NO" id="JlJ-bS-IQS">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="selectImage" translatesAutoresizingMaskIntoConstraints="NO" id="JlJ-bS-IQS">
                                 <rect key="frame" x="64" y="82" width="264" height="320"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="320" id="eS8-6R-7kG"/>
@@ -285,7 +285,7 @@
         <image name="Like" width="28" height="24"/>
         <image name="Search" width="29" height="29"/>
         <image name="Star" width="20" height="19"/>
-        <image name="selectImage.png" width="264" height="300"/>
+        <image name="selectImage" width="264" height="300"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
