@@ -8,7 +8,7 @@
 import UIKit
 import Alamofire
 
-class ListViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UISearchBarDelegate{
+class ListViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UISearchBarDelegate, ListItemCollectionViewCellDelegate{
     
     
     @IBOutlet weak var searchBar: UISearchBar!
@@ -35,16 +35,13 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
         
         let item = listData[indexPath.row]
         
-        guard !listData.isEmpty && indexPath.row < listData.count else {
-            return UICollectionViewCell() // Geçerli indeks aralığından dışarıda ise boş bir hücre döndürün.
-        }
-        
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "listItem", for: indexPath) as? ListItemCollectionViewCell else { return UICollectionViewCell() }
         
         cell.getWidthHeightListItem(width: item.previewWidth, height: item.previewHeight)
         if let imageURL = URL(string: item.previewURL) {
             cell.imageView.kf.setImage(with: imageURL)
         }
+        cell.delegate = self // ListItemCollectionViewCellDelegate protocolu'ünü kullanabilmek için kullanılır.
         cell.comments.text = "(\(item.comments) Yorum)"
         cell.likes.text = String(item.likes)
         cell.views.text = "\(item.views) (görüntülenme)"
@@ -73,7 +70,14 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
         layout.minimumInteritemSpacing = 20
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
         listCollectionView.setCollectionViewLayout(layout, animated: true)
-        print(listData)
+    }
+    
+    func didTapButtonInCell(_ cell: UICollectionViewCell) {
+        guard let indexPath = listCollectionView.indexPath(for: cell) else {
+            return
+        }
+        let selectedItem = listData[indexPath.row]
+        LikeDataManager.shared.addLikes(data: selectedItem)
     }
     
     func fetchData(with query: String) {

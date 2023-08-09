@@ -9,7 +9,7 @@ import UIKit
 import Alamofire
 import Kingfisher
 
-class HomeViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class HomeViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, ListItemCollectionViewCellDelegate {
 
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -54,6 +54,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             // guard ve if aynı guard hatayı başta yakalar.
             // dequeueReusableCell bunun amacı hücre yeniden kullanılabilir. hücre içindeki veriler silinse de değişse de yeniden aynı hücre kullanılabilir.
         let item = data[indexPath.row] // diziden elemanları çekiyorum.
+        cell.tag = indexPath.row // cell'in index değerini tutuyorum.
+        cell.delegate = self
         cell.getWidthHeightListItem(width: item.previewWidth, height: item.previewHeight) // resimlerin boyutlarını cell dosyasına yolluyoruz
         if let imageURL = URL(string: item.previewURL) { // cell'lerdeki image'ların çekilmesi.
             cell.imageView.kf.setImage(with: imageURL)
@@ -112,11 +114,10 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         super.viewDidLoad()
 
         collectionView.delegate = self
-        collectionView.dataSource = self
+        collectionView.dataSource = self	
         
         // Veri çekme isteği atılıyor.
         fetchData()
-        
         collectionView.register(UINib(nibName: "ListItemCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "listItem") // Burası hazırladığımız cell tasarımını collectiona tanıtır.
         
         let layout = UICollectionViewFlowLayout() // grid düzen oluşturmak için kullandığımız blok
@@ -125,6 +126,14 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20) // Hücreler ile ekran arasındaki boşluk
         collectionView.setCollectionViewLayout(layout, animated: true)
         
+    }
+    
+    func didTapButtonInCell(_ cell: UICollectionViewCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else {
+            return
+        }
+        let selectedItem = data[indexPath.row]
+        LikeDataManager.shared.addLikes(data: selectedItem)
     }
     
     func fetchData() {
@@ -150,12 +159,9 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
                                             let webformatURL = data["webformatURL"] as? String,
                                             let webformatWidth = data["webformatWidth"] as? Int,
                                             let webformatHeight = data["webformatHeight"] as? Int {
-                                            /*print("previewURL: \(previewURL), previewWidth: \(previewWidth), previewHeight: \(previewHeight), Likes: \(likes), Comments: \(comments), Views: \(views), User: \(user), UserImageURL: \(userImageURL), webformatURL: \(webformatURL), webformatWidth: \(webformatWidth), webformatHeight: \(webformatHeight), id: \(id)")*/
-                                            let responseData = dataResponse(id: id, previewURL: previewURL, previewWidth: previewWidth, previewHeight: previewHeight, likes: likes, comments: comments, views: views, user: user, userImageURL: userImageURL, webformatURL: webformatURL, webformatWidth: webformatWidth, webformatHeight: webformatHeight)
-                                            //self.data.append(responseData)
+                                                let responseData = dataResponse(id: id, previewURL: previewURL, previewWidth: previewWidth, previewHeight: previewHeight, likes: likes, comments: comments, views: views, user: user, userImageURL: userImageURL, webformatURL: webformatURL, webformatWidth: webformatWidth, webformatHeight: webformatHeight)
                                             DataManager.shared.dataArray.append(responseData)
                                             self.data = DataManager.shared.dataArray
-                                            // daha sonra da bir dataResponse nesnesi oluşturup bunu data dizisine ekliyo.
                                         }
                                     }
                                 }

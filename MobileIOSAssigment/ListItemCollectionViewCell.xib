@@ -17,12 +17,12 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="center" fixedFrame="YES" axis="vertical" alignment="top" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="6Oo-5w-OAR">
-                        <rect key="frame" x="92" y="57.000000000000014" width="156" height="193.33333333333337"/>
+                        <rect key="frame" x="92" y="57" width="156" height="193.33333333333334"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="-46" translatesAutoresizingMaskIntoConstraints="NO" id="rUe-19-Ida">
                                 <rect key="frame" x="0.0" y="0.0" width="156" height="150"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="selectImage.png" translatesAutoresizingMaskIntoConstraints="NO" id="BYk-c9-iFo">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="selectImage" translatesAutoresizingMaskIntoConstraints="NO" id="BYk-c9-iFo">
                                         <rect key="frame" x="0.0" y="0.0" width="150" height="150"/>
                                         <gestureRecognizers/>
                                         <constraints>
@@ -95,6 +95,6 @@
         <image name="Like" width="28" height="24"/>
         <image name="Star" width="20" height="19"/>
         <image name="View" width="18" height="13"/>
-        <image name="selectImage.png" width="264" height="300"/>
+        <image name="selectImage" width="264" height="300"/>
     </resources>
 </document>
