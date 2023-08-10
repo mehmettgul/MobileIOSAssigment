@@ -26,7 +26,6 @@ class ListItemCollectionViewCell: UICollectionViewCell {
     var height: Int = 0
     
     @IBAction func likeClicked(_ sender: Any) {
-        print("tapped")
         delegate?.didTapButtonInCell(self)
     }    
     

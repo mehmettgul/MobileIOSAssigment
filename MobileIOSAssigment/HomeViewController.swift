@@ -133,7 +133,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             return
         }
         let selectedItem = data[indexPath.row]
-        LikeDataManager.shared.addLikes(data: selectedItem)
+        LikeDataManager.shared.addLikesIfNotExists(data: selectedItem)
     }
     
     func fetchData() {

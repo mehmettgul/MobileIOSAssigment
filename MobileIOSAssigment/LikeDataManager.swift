@@ -20,6 +20,7 @@ class LikeDataManager {
     
     func addLikes(data: dataResponse) {
         let like = NSEntityDescription.insertNewObject(forEntityName: "Likes", into: managedObjectContext) as! Likes
+        
         like.comment = Int32(data.comments)
         like.like = Int32(data.likes)
         like.view = Int32(data.views)
@@ -74,18 +75,36 @@ class LikeDataManager {
         } catch {
             print("Error deleting entities: \(error)")
         }
-        
+    }
+    
+    func addLikesIfNotExists(data: dataResponse) {
+//        if let bundle = Bundle.main.bundleIdentifier {
+//            UserDefaults.standard.removePersistentDomain(forName: bundle)
+//            UserDefaults.standard.synchronize()
+//        }
+//        UserDefaults.standard.removeObject(forKey: "8173402")
+        let likedDataArray = UserDefaults.standard.array(forKey: "likedDataArray") as? [Int] ?? [] // id bilgilerini userdefaults'da tutuyorum.
+        if likedDataArray.contains(data.id) { // eğer burda veri varsa zaten eklenmiştir. Ekleme
+            print("Data already exists in Likes (UserDefaults). Skipping.")
+        } else {
+            // Core Data'da zaten eklenmiş mi?
+            let fetchRequest: NSFetchRequest<Likes> = Likes.fetchRequest()
+            fetchRequest.predicate = NSPredicate(format: "id == %d", data.id as CVarArg) // id bilgisine göre arama yapar.
+            do {
+                let existingLikes = try managedObjectContext.fetch(fetchRequest) // bu kısım sorguya göre dolar. Eğer doluysa veri vardır. Yazdırma, Boşsa veri yoktur yazdır.
+                if existingLikes.isEmpty {
+                    // Eğer Core Data'da yoksa ekle
+                    addLikes(data: data)
+                    // UserDefaults'a da ekle
+                    var updatedLikedDataArray = likedDataArray
+                    updatedLikedDataArray.append(data.id)
+                    UserDefaults.standard.set(updatedLikedDataArray, forKey: "likedDataArray")
+                } else {
+                    print("Data already exists in Likes (Core Data). Skipping.")
+                }
+            } catch {
+                print("Failed to check existing data: \(error)")
+            }
+        }
     }
 }
-/*func deleteAllEntities(entityName: String, context: NSManagedObjectContext) {
-    let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Likes")
-    let batchDeleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-    
-    do {
-        try context.execute(batchDeleteRequest)
-        try context.save()
-        print("\(Likes.self) entities deleted successfully.")
-    } catch {
-        print("Error deleting entities: \(error)")
-    }
-}*/

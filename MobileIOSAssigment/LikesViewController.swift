@@ -21,7 +21,7 @@ class LikesViewController: UIViewController, UICollectionViewDelegate, UICollect
         likeCollectionView.dataSource = self
         
         likeCollectionView.register(UINib(nibName: "LikeCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "likeItem")
-        
+        //likeDataManager.deleteAllEntities(entityName: "Likes") // Entity temizler.
         let layout = UICollectionViewFlowLayout() // grid düzen oluşturmak için kullandığımız blok
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 20 // Hücreler arasındaki boşluk
