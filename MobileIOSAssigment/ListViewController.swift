@@ -77,7 +77,7 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
             return
         }
         let selectedItem = listData[indexPath.row]
-        LikeDataManager.shared.addLikesIfNotExists(data: selectedItem)
+        LikeDataManager.shared.removeLike(data: selectedItem)
     }
     
     func fetchData(with query: String) {

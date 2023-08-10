@@ -13,6 +13,7 @@ class LikeDataManager {
     
     static let shared = LikeDataManager()
     var likeDataArray: [dataResponse] = []
+    var likedDataArray = UserDefaults.standard.array(forKey: "likedDataArray") as? [Int] ?? [] // id bilgilerini userdefaults'da tutuyorum.
     
     private var managedObjectContext: NSManagedObjectContext {
         return (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -27,6 +28,7 @@ class LikeDataManager {
         like.image = data.previewURL
         like.previewWidth = Int32(data.previewWidth)
         like.previewHeight = Int32(data.previewHeight)
+        like.id = Int64(data.id)
         print("add deniyoruz")
         do {
             try managedObjectContext.save()
@@ -83,7 +85,6 @@ class LikeDataManager {
 //            UserDefaults.standard.synchronize()
 //        }
 //        UserDefaults.standard.removeObject(forKey: "8173402")
-        let likedDataArray = UserDefaults.standard.array(forKey: "likedDataArray") as? [Int] ?? [] // id bilgilerini userdefaults'da tutuyorum.
         if likedDataArray.contains(data.id) { // eğer burda veri varsa zaten eklenmiştir. Ekleme
             print("Data already exists in Likes (UserDefaults). Skipping.")
         } else {
@@ -107,4 +108,36 @@ class LikeDataManager {
             }
         }
     }
-}
+    
+    func removeLike(data: dataResponse) {
+        print(data.id)
+        let fetchRequest: NSFetchRequest<Likes> = Likes.fetchRequest()
+        
+        
+        do {
+            let existingLikes = try managedObjectContext.fetch(fetchRequest)
+            if let existingLike = existingLikes.first(where: { Likes in
+                Likes.id == data.id
+            }) {
+                // Eğer veri varsa, Core Data'dan silinir
+                managedObjectContext.delete(existingLike)
+                
+                // Veriyi kullanıcı tercihlerinden (UserDefaults) de kaldırıyoruz
+                var likedDataArray = UserDefaults.standard.array(forKey: "likedDataArray") as? [Int] ?? []
+                if let index = likedDataArray.firstIndex(of: data.id) {
+                    likedDataArray.remove(at: index)
+                    UserDefaults.standard.set(likedDataArray, forKey: "likedDataArray")
+                }
+                
+                print("Data removed from Likes (Core Data) and UserDefaults.")
+            } else {
+                print("Data does not exist in Likes (Core Data). Skipping removal.")
+            }
+            
+            try managedObjectContext.save() // Değişiklikleri kaydetmeyi unutmayın.
+        } catch {
+            print("Failed to check existing data or remove: \(error)")
+        }
+    }
+
+    }
