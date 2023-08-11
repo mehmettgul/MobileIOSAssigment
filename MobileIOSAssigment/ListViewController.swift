@@ -41,6 +41,8 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
         if let imageURL = URL(string: item.previewURL) {
             cell.imageView.kf.setImage(with: imageURL)
         }
+        let isLiked = LikeDataManager.shared.isLiked(data: item)
+        cell.isLiked = isLiked
         cell.delegate = self // ListItemCollectionViewCellDelegate protocolu'ünü kullanabilmek için kullanılır.
         cell.comments.text = "(\(item.comments) Yorum)"
         cell.likes.text = String(item.likes)
@@ -77,7 +79,7 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
             return
         }
         let selectedItem = listData[indexPath.row]
-        LikeDataManager.shared.removeLike(data: selectedItem)
+        LikeDataManager.shared.toggleLike(data: selectedItem)
     }
     
     func fetchData(with query: String) {

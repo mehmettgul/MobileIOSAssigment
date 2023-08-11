@@ -26,12 +26,21 @@ class ListItemCollectionViewCell: UICollectionViewCell {
     var height: Int = 0
     
     @IBAction func likeClicked(_ sender: Any) {
+        NotificationCenter.default.post(name: NSNotification.Name("homeDataUpload"), object: nil)
         delegate?.didTapButtonInCell(self)
     }    
     
     func getWidthHeightListItem(width: Int, height: Int) { // resimlerin boyutlarını alıp bu boyutlara göre gösterme işlemi yapıyoruz. 
         self.width = width
         self.height = height
+    }
+    
+    var isLiked: Bool = false {
+        didSet {
+            // Like yapıldığında değişecek şeyler.
+            let buttonImage = isLiked ? UIImage(named: "Like") : UIImage(named: "dislike")
+            likeButton.setImage(buttonImage, for: .normal)
+        }
     }
     
 }

@@ -55,6 +55,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             // dequeueReusableCell bunun amacı hücre yeniden kullanılabilir. hücre içindeki veriler silinse de değişse de yeniden aynı hücre kullanılabilir.
         let item = data[indexPath.row] // diziden elemanları çekiyorum.
         cell.tag = indexPath.row // cell'in index değerini tutuyorum.
+        let isLiked = LikeDataManager.shared.isLiked(data: item)
+        cell.isLiked = isLiked
         cell.delegate = self
         cell.getWidthHeightListItem(width: item.previewWidth, height: item.previewHeight) // resimlerin boyutlarını cell dosyasına yolluyoruz
         if let imageURL = URL(string: item.previewURL) { // cell'lerdeki image'ların çekilmesi.
@@ -110,6 +112,12 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         }
     }
     
+    @objc func homeDataUpload() {
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -125,7 +133,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         layout.minimumInteritemSpacing = 20 // Hücreler arasındaki boşluk
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20) // Hücreler ile ekran arasındaki boşluk
         collectionView.setCollectionViewLayout(layout, animated: true)
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(homeDataUpload), name: NSNotification.Name("homeDataUpload"), object: nil)
     }
     
     func didTapButtonInCell(_ cell: UICollectionViewCell) {
@@ -133,7 +141,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             return
         }
         let selectedItem = data[indexPath.row]
-        LikeDataManager.shared.removeLike(data: selectedItem)
+        LikeDataManager.shared.toggleLike(data: selectedItem)
     }
     
     func fetchData() {

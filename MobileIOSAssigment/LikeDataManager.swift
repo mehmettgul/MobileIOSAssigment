@@ -29,7 +29,7 @@ class LikeDataManager {
         like.previewWidth = Int32(data.previewWidth)
         like.previewHeight = Int32(data.previewHeight)
         like.id = Int64(data.id)
-        print("add deniyoruz")
+        like.isLike = true
         do {
             try managedObjectContext.save()
             print("like added successfully.")
@@ -110,34 +110,75 @@ class LikeDataManager {
     }
     
     func removeLike(data: dataResponse) {
-        print(data.id)
         let fetchRequest: NSFetchRequest<Likes> = Likes.fetchRequest()
-        
-        
         do {
             let existingLikes = try managedObjectContext.fetch(fetchRequest)
             if let existingLike = existingLikes.first(where: { Likes in
-                Likes.id == data.id
+                Likes.id == data.id // id'lerin sorgulanması
             }) {
                 // Eğer veri varsa, Core Data'dan silinir
                 managedObjectContext.delete(existingLike)
-                
+                existingLike.isLike = false
                 // Veriyi kullanıcı tercihlerinden (UserDefaults) de kaldırıyoruz
                 var likedDataArray = UserDefaults.standard.array(forKey: "likedDataArray") as? [Int] ?? []
                 if let index = likedDataArray.firstIndex(of: data.id) {
                     likedDataArray.remove(at: index)
                     UserDefaults.standard.set(likedDataArray, forKey: "likedDataArray")
                 }
-                
                 print("Data removed from Likes (Core Data) and UserDefaults.")
             } else {
                 print("Data does not exist in Likes (Core Data). Skipping removal.")
             }
-            
-            try managedObjectContext.save() // Değişiklikleri kaydetmeyi unutmayın.
+            try managedObjectContext.save() // Değişiklikleri kaydet.
         } catch {
             print("Failed to check existing data or remove: \(error)")
         }
     }
-
+    
+    func toggleLike(data: dataResponse) {
+        let fetchRequest: NSFetchRequest<Likes> = Likes.fetchRequest()
+        do {
+            let existingLikes = try managedObjectContext.fetch(fetchRequest)
+            if let existingLike = existingLikes.first(where: { Likes in
+                Likes.id == data.id // id'lerin sorgulanması
+            }) {
+                // Eğer veri varsa, Core Data'dan silinir
+                managedObjectContext.delete(existingLike)
+                // Veriyi kullanıcı UserDefaults'dan da kaldırıyoruz
+                var likedDataArray = UserDefaults.standard.array(forKey: "likedDataArray") as? [Int] ?? []
+                if let index = likedDataArray.firstIndex(of: data.id) {
+                    likedDataArray.remove(at: index)
+                    UserDefaults.standard.set(likedDataArray, forKey: "likedDataArray")
+                }
+                print("Data removed from Likes (Core Data) and UserDefaults.")
+            } else {
+                print("Data does not exist in Likes (Core Data). Adding to Likes.")
+                // Veri Core Data'da yoksa, ekle
+                addLikesIfNotExists(data: data)
+            }
+            try managedObjectContext.save() // Değişiklikleri kaydet
+        } catch {
+            print("Failed to check existing data or remove/add: \(error)")
+        }
     }
+    
+    func isLiked(data: dataResponse) -> Bool {
+        let fetchRequest: NSFetchRequest<Likes> = Likes.fetchRequest()
+        do {
+            let existingLikes = try managedObjectContext.fetch(fetchRequest)
+            if let existingLike = existingLikes.first(where: { Likes in
+                Likes.id == data.id // id'lerin sorgulanması
+            }) {
+                // Eğer veri varsa true döner like'lanmış
+                return true
+            } else {
+                // Veri Core Data'da yoksa false döner like'lanmamış
+                return false
+            }
+        } catch {
+            print("Failed to check existing data: \(error)")
+        }
+        return false // default olarak hepsi gri görünecek.
+    }
+    
+}
