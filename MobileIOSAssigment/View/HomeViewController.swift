@@ -15,7 +15,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     let baseUrl = "https://pixabay.com/api/" // gidilen endpointler hep farklı olduğundan farklı olan yerleri ekleyip sabit kalan yeri baseUrl olarak belirledik.
     let jsonDecoder = JSONDecoder()
-    var data: [dataResponse] = []
+    var data: [DataResponse] = []
     var userName = ""
     var like = ""
     var comment = ""
@@ -25,6 +25,9 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     var webformatHeight = 0
     var id = 0
     var index = -1
+    var viewmodel = HomeViewmodel()
+    var likeviewmodel = LikeViewmodel()
+    var likedataviewmodel = LikeDataViewmodel()
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         // her bir item'ın sağdan soldan yukardan ve aşağıdan boşluklarını belirtir.
@@ -55,7 +58,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             // dequeueReusableCell bunun amacı hücre yeniden kullanılabilir. hücre içindeki veriler silinse de değişse de yeniden aynı hücre kullanılabilir.
         let item = data[indexPath.row] // diziden elemanları çekiyorum.
         cell.tag = indexPath.row // cell'in index değerini tutuyorum.
-        let isLiked = LikeDataManager.shared.isLiked(data: item)
+        let isLiked = likeviewmodel.isLiked(data: item)
         cell.isLiked = isLiked
         cell.delegate = self
         cell.getWidthHeightListItem(width: item.previewWidth, height: item.previewHeight) // resimlerin boyutlarını cell dosyasına yolluyoruz
@@ -125,7 +128,10 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         collectionView.dataSource = self	
         
         // Veri çekme isteği atılıyor.
-        fetchData()
+        viewmodel.fetchData { data in
+            self.data = data
+            self.collectionView.reloadData()
+        }
         collectionView.register(UINib(nibName: "ListItemCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "listItem") // Burası hazırladığımız cell tasarımını collectiona tanıtır.
         
         let layout = UICollectionViewFlowLayout() // grid düzen oluşturmak için kullandığımız blok
@@ -141,50 +147,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             return
         }
         let selectedItem = data[indexPath.row]
-        LikeDataManager.shared.toggleLike(data: selectedItem)
-    }
-    
-    func fetchData() {
-        AF.request("\(baseUrl)?key=37427312-d8d1e5548011abcd225706ea7", method: .get).responseJSON { response in
-                if let error = response.error { // hata alıp almadığımızı kontrol ediyoruz.
-                    print(error)
-                } else { // hata yoksa çektiğimiz verileri konsoldan görebiliyoruz.
-                    do {
-                        if let data = response.data {
-                            if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                                // JSON verisi başarıyla parse edildi, verilere eriş
-                                if let fetchData = json["hits"] as? [[String: Any]] {
-                                    for data in fetchData { // her bir nesnenin doğru türden olup olmadığını kontrol ediyor.
-                                        if  let id = data["id"] as? Int,
-                                            let previewURL = data["previewURL"] as? String,
-                                            let previewWidth = data["previewWidth"] as? Int,
-                                            let previewHeight = data["previewHeight"] as? Int,
-                                            let likes = data["likes"] as? Int,
-                                            let comments = data["comments"] as? Int,
-                                            let views = data["views"] as? Int,
-                                            let user = data["user"] as? String,
-                                            let userImageURL = data["userImageURL"] as? String,
-                                            let webformatURL = data["webformatURL"] as? String,
-                                            let webformatWidth = data["webformatWidth"] as? Int,
-                                            let webformatHeight = data["webformatHeight"] as? Int {
-                                                let responseData = dataResponse(id: id, previewURL: previewURL, previewWidth: previewWidth, previewHeight: previewHeight, likes: likes, comments: comments, views: views, user: user, userImageURL: userImageURL, webformatURL: webformatURL, webformatWidth: webformatWidth, webformatHeight: webformatHeight)
-                                            DataManager.shared.dataArray.append(responseData)
-                                            self.data = DataManager.shared.dataArray
-                                        }
-                                    }
-                                }
-                            } else {
-                                print("else'deki error")
-                            }
-                        }
-                    } catch {
-                        print("catch'deki error")
-                    }
-                     self.collectionView.reloadData()
-                    //print(response)
-                }
-            }
-        
+        likeviewmodel.toggleLike(data: selectedItem)
     }
     
 }

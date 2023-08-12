@@ -9,5 +9,5 @@ import Foundation
 
 class DataManager {
     static let shared = DataManager()
-    var dataArray: [dataResponse] = []
+    var dataArray: [DataResponse] = []
 }

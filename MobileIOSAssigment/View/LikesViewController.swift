@@ -12,7 +12,7 @@ class LikesViewController: UIViewController, UICollectionViewDelegate, UICollect
 
     @IBOutlet weak var likeCollectionView: UICollectionView!
     
-    var likeDataManager = LikeDataManager()
+    var likeDataManager = LikeDataViewmodel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,7 +20,7 @@ class LikesViewController: UIViewController, UICollectionViewDelegate, UICollect
         likeCollectionView.delegate = self
         likeCollectionView.dataSource = self
         
-        likeCollectionView.register(UINib(nibName: "LikeCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "likeItem")
+        likeCollectionView.register(UINib(nibName: "ListItemCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "listItem")
         //likeDataManager.deleteAllEntities(entityName: "Likes") // Entity temizler.
         let layout = UICollectionViewFlowLayout() // grid düzen oluşturmak için kullandığımız blok
         layout.scrollDirection = .vertical
@@ -50,17 +50,17 @@ class LikesViewController: UIViewController, UICollectionViewDelegate, UICollect
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "likeItem", for: indexPath) as? LikeCollectionViewCell else { return UICollectionViewCell() }
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "listItem", for: indexPath) as? ListItemCollectionViewCell else { return UICollectionViewCell() }
         
         let like = likeDataManager.fetchLikes()[indexPath.item]
         
         if let imageURL = URL(string: like.image ?? "") { // cell'lerdeki image'ların çekilmesi.
-            cell.likeImage.kf.setImage(with: imageURL)
+            cell.imageView.kf.setImage(with: imageURL)
         }
-        cell.commentLabel.text = " (\(like.comment) Yorum)" // comments, like, görüntülenme bilgisi çekiliyor.
-        cell.likeLabel.text = String(like.like)
-        cell.viewLabel.text = "\(like.view) (görüntülenme)"
-        
+        cell.likeButton.isHidden = true
+        cell.comments.text = " (\(like.comment) Yorum)" // comments, like, görüntülenme bilgisi çekiliyor.
+        cell.likes.text = String(like.like)
+        cell.views.text = "\(like.view) (görüntülenme)"
         return cell
     }
     

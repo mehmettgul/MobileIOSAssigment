@@ -27,6 +27,7 @@ class ListItemCollectionViewCell: UICollectionViewCell {
     
     @IBAction func likeClicked(_ sender: Any) {
         NotificationCenter.default.post(name: NSNotification.Name("homeDataUpload"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name("listDataUpload"), object: nil)
         delegate?.didTapButtonInCell(self)
     }    
     

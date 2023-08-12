@@ -47,7 +47,7 @@
                             <constraint firstItem="rgy-5m-k14" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="ns9-Ki-aNv"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="" image="Like" id="B6c-s1-s5s"/>
+                    <tabBarItem key="tabBarItem" title="" image="dislike" id="B6c-s1-s5s"/>
                     <connections>
                         <outlet property="likeCollectionView" destination="rgy-5m-k14" id="eBM-eQ-CFh"/>
                     </connections>
@@ -120,7 +120,7 @@
         <!--Detail View Controller-->
         <scene sceneID="CWC-iI-jgl">
             <objects>
-                <viewController id="9GG-2V-WER" customClass="DetailViewController" customModule="MobileIOSAssigment" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DetailViewController" id="9GG-2V-WER" customClass="DetailViewController" customModule="MobileIOSAssigment" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="J5z-EK-09v">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -209,7 +209,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="26s-Gx-jR1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="228.24427480916029" y="-508.45070422535213"/>
+            <point key="canvasLocation" x="247" y="-130"/>
         </scene>
         <!--Home View Controller-->
         <scene sceneID="faw-jZ-mYI">
@@ -237,9 +237,6 @@
                                             <rect key="frame" x="0.0" y="0.0" width="150" height="220"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </collectionViewCellContentView>
-                                        <connections>
-                                            <segue destination="9GG-2V-WER" kind="show" identifier="homeToDetail" id="KaQ-7W-uJy"/>
-                                        </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
@@ -251,6 +248,7 @@
                     <navigationItem key="navigationItem" id="x4h-6L-gtq"/>
                     <connections>
                         <outlet property="collectionView" destination="ko1-il-wPo" id="che-kb-daA"/>
+                        <segue destination="9GG-2V-WER" kind="show" identifier="homeToDetail" id="Fg2-CO-La4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gei-5a-I6D" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -304,9 +302,9 @@
     </scenes>
     <resources>
         <image name="Home_2" width="30" height="26"/>
-        <image name="Like" width="28" height="24"/>
         <image name="Search" width="29" height="29"/>
         <image name="Star" width="20" height="19"/>
+        <image name="dislike" width="28" height="24"/>
         <image name="selectImage" width="264" height="300"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

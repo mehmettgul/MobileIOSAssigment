@@ -6,7 +6,7 @@
 //
 
 import Foundation
-struct dataResponse : Codable { // Codable bir protokoldür. decode ve encode işlemlerimi kolay hale getirir. jsonla çalışmak rahatlaşır.
+struct DataResponse : Codable { // Codable bir protokoldür. decode ve encode işlemlerimi kolay hale getirir. jsonla çalışmak rahatlaşır.
     var id : Int
     var previewURL : String
     var previewWidth : Int

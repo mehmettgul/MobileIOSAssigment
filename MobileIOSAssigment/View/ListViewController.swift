@@ -14,8 +14,11 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var listCollectionView: UICollectionView!
     
-    var listData: [dataResponse] = []
+    var listData: [DataResponse] = []
     let baseUrl = "https://pixabay.com/api/"
+    var viewmodel = ListViewmodel()
+    var likeviewmodel = LikeViewmodel()
+    var likedataviewmodel = LikeDataViewmodel()
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         // her bir item'ın boyutunu belirlediğimiz fonksiyon.
@@ -41,7 +44,7 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
         if let imageURL = URL(string: item.previewURL) {
             cell.imageView.kf.setImage(with: imageURL)
         }
-        let isLiked = LikeDataManager.shared.isLiked(data: item)
+        let isLiked = likeviewmodel.isLiked(data: item)
         cell.isLiked = isLiked
         cell.delegate = self // ListItemCollectionViewCellDelegate protocolu'ünü kullanabilmek için kullanılır.
         cell.comments.text = "(\(item.comments) Yorum)"
@@ -53,8 +56,17 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if let query = searchBar.text, !query.isEmpty {
             listData.removeAll() // Mevcut verileri temizleyin.
-            fetchData(with: query)
+            viewmodel.fetchData(with: query) { data in
+                self.listData = data
+                self.listCollectionView.reloadData()
+            }
             searchBar.resignFirstResponder()
+        }
+    }
+    
+    @objc func listDataUpload() {
+        DispatchQueue.main.async {
+            self.listCollectionView.reloadData()
         }
     }
     
@@ -72,6 +84,7 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
         layout.minimumInteritemSpacing = 20
         layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
         listCollectionView.setCollectionViewLayout(layout, animated: true)
+        NotificationCenter.default.addObserver(self, selector: #selector(listDataUpload), name: NSNotification.Name("listDataUpload"), object: nil)
     }
     
     func didTapButtonInCell(_ cell: UICollectionViewCell) {
@@ -79,52 +92,7 @@ class ListViewController: UIViewController, UICollectionViewDelegate, UICollecti
             return
         }
         let selectedItem = listData[indexPath.row]
-        LikeDataManager.shared.toggleLike(data: selectedItem)
-    }
-    
-    func fetchData(with query: String) {
-        let _: [String: Any] = [
-            "key": "37427312-d8d1e5548011abcd225706ea7",
-            "q": query // Bu, q parametresiyle arama sorgusunu belirlemek için eklenir.
-        ]
-        
-        AF.request("\(baseUrl)?key=37427312-d8d1e5548011abcd225706ea7&q=\(query)", method: .get).responseJSON { response in
-            if let error = response.error { // hata alıp almadığımızı kontrol ediyoruz.
-                print(error)
-            } else { // hata yoksa çektiğimiz verileri konsoldan görebiliyoruz.
-                do {
-                    if let data = response.data {
-                        if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                            // JSON verisi başarıyla parse edildi, verilere eriş
-                            if let fetchData = json["hits"] as? [[String: Any]] {
-                                    for data in fetchData { // her bir nesnenin doğru türden olup olmadığını kontrol ediyor.
-                                    if  let id = data["id"] as? Int,
-                                        let previewURL = data["previewURL"] as? String,
-                                        let previewWidth = data["previewWidth"] as? Int,
-                                        let previewHeight = data["previewHeight"] as? Int,
-                                        let likes = data["likes"] as? Int,
-                                        let comments = data["comments"] as? Int,
-                                        let views = data["views"] as? Int,
-                                        let user = data["user"] as? String,
-                                        let userImageURL = data["userImageURL"] as? String,
-                                        let webformatURL = data["webformatURL"] as? String,
-                                        let webformatWidth = data["webformatWidth"] as? Int,
-                                        let webformatHeight = data["webformatHeight"] as? Int {
-                                        let responseData = dataResponse(id: id, previewURL: previewURL, previewWidth: previewWidth, previewHeight: previewHeight, likes: likes, comments: comments, views: views, user: user, userImageURL: userImageURL, webformatURL: webformatURL, webformatWidth: webformatWidth, webformatHeight: webformatHeight)
-                                        self.listData.append(responseData)
-                                    }
-                                }
-                            }
-                        } else {
-                            print("else'deki error")
-                        }
-                    }
-                } catch {
-                    print("catch'deki error")
-                }
-                self.listCollectionView.reloadData()
-            }
-        }
+        likeviewmodel.toggleLike(data: selectedItem)
     }
     
 }
