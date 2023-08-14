@@ -28,7 +28,7 @@ class LikeViewmodel {
         do {
             try managedObjectContext.save()
             print("like added successfully.")
-            NotificationCenter.default.post(name: NSNotification.Name("DataUpdated"), object: nil)
+            NotificationCenter.default.post(name: NSNotification.Name("DataUpdated"), object: nil) // her eklemede ekranı güncelle. 
         } catch {
             print("Failed to add like: \(error)")
         }

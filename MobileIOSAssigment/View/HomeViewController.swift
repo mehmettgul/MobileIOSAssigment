@@ -76,42 +76,41 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         index = indexPath.row
         let item = data[indexPath.row]
         self.id = item.id
-        self.userName = item.user // segue öncesi bu sayfada çektiğimiz verileri bu sayfadaki değişkenlerde tutuyoruz.
+        self.userName = item.user
         self.like = String(item.likes)
         self.comment = "(\(item.comments) Yorum)"
         if let userImageURL = URL(string: item.userImageURL) { // userImage çek
-                KingfisherManager.shared.retrieveImage(with: userImageURL) { result in
-                    switch result {
-                    case .success(let imageResult):
-                        DispatchQueue.main.async {
-                            self.userImage = imageResult.image
-                        }
-                    case .failure(let error):
-                        print("User image retrieval error: \(error.localizedDescription)")
+            KingfisherManager.shared.retrieveImage(with: userImageURL) { result in
+                switch result {
+                case .success(let imageResult):
+                    DispatchQueue.main.async {
+                        self.userImage = imageResult.image
                     }
+                case .failure(let error):
+                    print("User image retrieval error: \(error.localizedDescription)")
                 }
             }
+        }
         if let webformatURL = URL(string: item.webformatURL) { // büyük resmi çek.
-                KingfisherManager.shared.retrieveImage(with: webformatURL) { result in // resmi indirip önbelleğe alır.
-                    switch result {
-                    case .success(let imageResult):
-                        DispatchQueue.main.async {
-                            self.webformatImage = imageResult.image
-                        }
-                    case .failure(let error):
-                        print("Webformat image retrieval error: \(error.localizedDescription)")
+            KingfisherManager.shared.retrieveImage(with: webformatURL) { result in // resmi indirip önbelleğe alır.
+                switch result {
+                case .success(let imageResult):
+                    DispatchQueue.main.async {
+                        self.webformatImage = imageResult.image
                     }
+                case .failure(let error):
+                    print("Webformat image retrieval error: \(error.localizedDescription)")
                 }
             }
+        }
         self.webformatWidth = item.webformatWidth
         self.webformatHeight = item.webformatHeight
-        self.performSegue(withIdentifier: "homeToDetail", sender: self) //image a tıklanınca detay sayfasına yönlendirme.
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "homeToDetail" {
-                let destinationVC = segue.destination as! DetailViewController // destination değerinden bir viewController gelir ama hangisinin geldiğini bilemez o yüzden vc ise ona göre cast edilir.
-            destinationVC.dataResponse = data[index]
+        // Programatik View Controller Geçişi : 
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "DetailViewController") as? DetailViewController {
+            let selectedData = data[indexPath.row]
+            vc.dataResponse = selectedData
+            self.navigationController?.pushViewController(vc, animated: true)
         }
     }
     
